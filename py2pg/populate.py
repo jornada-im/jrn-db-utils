@@ -4,13 +4,14 @@ import pdb
 # This is a function to use the "copy_from" command to add a                   4
 # csv to a database table
 
-def copy_from_file(conn, df, table, columns=None, null=''):
+def copy_from_file(conn, df, table, sep=';', columns=None, null=''):
     """
     Use "copy_from" command to add a pandas dataframe to a database table.
     
     conn:    database connection (with psycopg2)
     df:      source pandas dataframe (becomes a temporary csv)
     table:   destination table in the database connection
+    sep:     delimiter for writing output file
     columns: list of columns in destination table to fill with source data 
              (match n of coluns in df/csv
     null:    value in df/csv to fill with NULL in destination table
@@ -28,12 +29,12 @@ def copy_from_file(conn, df, table, columns=None, null=''):
     """
     # Save the dataframe to disk, then open file
     tmp_df = "./tmp_dataframe.csv"
-    df.to_csv(tmp_df, index=False, sep=';', header=False)
+    df.to_csv(tmp_df, index=False, sep=sep, header=False)
     f = open(tmp_df, 'r')
     # set cursor and try COPY FROM
     cursor = conn.cursor()
     try:
-        cursor.copy_from(f, table, sep=";", columns=columns, null=null)
+        cursor.copy_from(f, table, sep=sep, columns=columns, null=null)
         conn.commit()
     except (Exception, pg.DatabaseError) as error:
         # Errors will be printed out if the operation can't complete
