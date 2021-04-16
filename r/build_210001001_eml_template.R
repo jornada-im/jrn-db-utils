@@ -71,11 +71,32 @@ EML_pkg <-
 EML::eml_validate(EML_pkg)
 EML::write_eml(EML_pkg, file = paste0(pkgid, ".xml"))
 
-# use EDIutils to push package update to EDI environment
+# Pushing the package update to EDI environment
 
+# This only works if the data entity files have a public URL in the EML
+# <distribution> element. In metabase, the URL for that element most go into
+# the "DataSetEntities".Urlhead value for each entity. PASTA has to find the 
+# entities at that URL to download and check them.
+
+# To put the entities in an S3 bucket, use system calls to s3cmd put:
+s3dest <- 's3://jrn-data-entities'
+entitylist <- c('JRN_001001_runoff_vegetation_data.csv', 'Hydrology_prog.txt')
+
+for (e in 1:length(entitylist)){
+  syscall <- paste('s3cmd put', entitylist[e], s3dest)
+  system(syscall)
+}
+
+# Documentation for s3cmd is [here](https://s3tools.org/usage)
+# There are other options, including some options in R (aws.s3 and 
+# googleCloudStorageR packages), but I haven't gotten them to work yet. 
+# Another option is gsutil, which should work in windows
+# (https://cloud.google.com/storage/docs/gsutil_install)
+
+# Once the entities are in their web location, push the package update to 
+# PASTA
 do.call(api_update_data_package,
         c(list(path = getwd(),       # current directory
                package.id = pkgid,   # package id
                environment = edienv),# EDI environment
           edicred))
-
