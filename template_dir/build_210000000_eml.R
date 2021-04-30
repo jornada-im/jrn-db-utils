@@ -1,33 +1,59 @@
-# workflow from metabase to EML document (to EDI)
+# build_210000000_eml.R
+# 
+# BOILERPLATE >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+# This is a template build script using R to prepare eml and 
+# send a dataset to EDI. MetaEgress pulls metadata for the dataset
+# from an lter-metabase. You need credentials for this to work.
+# You can safely remove this and other boilerplate and use
+# the rest to design a new R script for your dataset.
+# <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+
+# All metadata documents (abstract, methods) and any data entity
+# files (CSVs, images, zipfiles etc.) must be in the directory with 
+# this script. The data entities, abstract, and methods files
+# should be named to match the values in the lter-metabase 
+# (DataSetEntities.FileName, DataSet.Abstract and 
+# DataSetMethod.Description).
 
 library('MetaEgress')
 library('EDIutils')
 
-# put project script plus data files and other documents
-# eg. abstract, methods in a folder with this script
-
 # EDI scope
 scope <- 'knb-lter-jrn'
 # Package ID
-pkg <- 210001001
+pkg <- 210000000
 # EDI environment destination (production or staging)
 edienv <- 'staging'
+# List of data entity filenames going to EDI
+entitylist <- c('JRN000000_mtcars.csv')
 
-# set workding directory to directory of current script
-# data files + abstract (as in column DataSet.Abstract) 
-# plus methods (as in column DataSetMethodSteps.Description)
-# should be in this folder
+# set working directory
 setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
 
 # get credentials for JRN metabase and EDI
+# there is a template for this file in jrn-metabase-utils repository
 source('~/Desktop/jrn_cred.R')
 
 # connect to metabase and get metadata from specified datasets
 # can specify multiple dataset IDs if you plan to reuse this list
-metadata <- do.call(get_meta,
-                    c(list(dbname = "jrn_metabase_dev", # change to your DB name
-                           dataset_ids = c(pkg)),       # change to vector of datasets wanted
-                      mbcred))
+metadata <-
+	do.call(get_meta,
+		c(list(dbname = "jrn_metabase_dev", # change to your DB name
+		       dataset_ids = c(pkg)), # can be a vector of datasets
+		  mbcred)) # assigned in cred file
+
+# To just enter credentials at the command prompt (or possibly a popup if Rstudio is
+# properly configured):
+#metadata <-
+#  get_meta(
+#    dbname = "jrn_metabase_dev", # change to your DB name
+#    schema = "mb2eml_r",         # change to schema containing views
+#    dataset_ids = 210001001,     # change to ID or numeric vector of IDs wanted
+#    host = "oryx",               # change to IP address if remote host
+#    port = 5432,
+#    user = NULL,    # change to username and password to save time or if not using RStudio
+#    password = NULL # if NULL, RStudio will create pop-up windows asking for username and password
+#  )
 
 # Get current revision number in metabase
 revnum_start <- metadata$dataset$revision_number
@@ -36,7 +62,7 @@ revnum_start <- metadata$dataset$revision_number
 # and increment by one, update in metadata list
 if (edienv=='staging'){
   revnum_start <- api_list_data_package_revisions(scope, pkg, filter='newest',
-                                                  environment = 'staging')
+                                                  environment = edienv)
 }
 
 # Now update the metadata list with the next revision number
@@ -45,6 +71,7 @@ metadata$dataset$revision_number <-revnum
 
 # Create packageID
 pkgid <- paste0(scope, "." , pkg, ".", revnum)
+
 # ------------------------
 # data set specific steps
 
@@ -52,12 +79,6 @@ pkgid <- paste0(scope, "." , pkg, ".", revnum)
 tables_pkg <- create_entity_all(meta_list =  metadata,
                                 file_dir = getwd(),
                                 dataset_id = pkg)
-
-# MetaEgress doesn't seem to do this (but 'textFormat' is correctly in metadata$entities)
-# Seems that it is treating otherEntities differently
-# this is fix 1
-# fix 2 is adding in metabase EMLFileTypes.externallyDefinedFormat_formatName
-#tables_pkg$other_entities[[1]]$physical$dataFormat$externallyDefinedFormat$formatName = 'textFormat'
 
 # create EML list object
 EML_pkg <-
@@ -80,7 +101,6 @@ EML::write_eml(EML_pkg, file = paste0(pkgid, ".xml"))
 
 # To put the entities in an S3 bucket, use system calls to s3cmd put:
 s3dest <- 's3://jrn-data-entities'
-entitylist <- c('JRN_001001_runoff_vegetation_data.csv', 'Hydrology_prog.txt')
 
 for (e in 1:length(entitylist)){
   syscall <- paste('s3cmd put', entitylist[e], s3dest)
@@ -94,9 +114,15 @@ for (e in 1:length(entitylist)){
 # (https://cloud.google.com/storage/docs/gsutil_install)
 
 # Once the entities are in their web location, push the package update to 
-# PASTA
+# PASTA. NOTE that this wasn't working last I checked.... might have to upload
+# EML (but not data) at portal.edirepository.org
 do.call(api_update_data_package,
         c(list(path = getwd(),       # current directory
                package.id = pkgid,   # package id
                environment = edienv),# EDI environment
           edicred))
+
+# The above should be equivalent to:
+#api_update_data_package(path=getwd(),package.id = pkgid, environment = edienv,
+#                        affiliation='EDI', user.id='<user>',
+#                        user.pass='<password>')
