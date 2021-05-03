@@ -92,6 +92,8 @@ EML_pkg <-
 EML::eml_validate(EML_pkg)
 EML::write_eml(EML_pkg, file = paste0(pkgid, ".xml"))
 
+# NOW UPDATE MANUALLY on EDI *OR* follow steps below if your S3 is configured
+
 # Pushing the package update to EDI environment
 
 # This only works if the data entity files have a public URL in the EML

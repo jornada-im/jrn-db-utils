@@ -1,0 +1,304 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<eml:eml xmlns:eml="https://eml.ecoinformatics.org/eml-2.2.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:stmml="http://www.xml-cml.org/schema/stmml-1.2" xmlns:d1v1="NULL" packageId="knb-lter-jrn.210000000.11" xsi:schemaLocation="https://eml.ecoinformatics.org/eml-2.2.0 https://nis.lternet.edu/schemas/EML/eml-2.2.0/xsd/eml.xsd" system="jrn">
+  <access authSystem="https://pasta.lternet.edu/authentication" order="allowFirst" scope="document" system="https://pasta.lternet.edu">
+    <allow>
+      <principal>uid=JRN,o=LTER,dc=ecoinformatics,dc=org</principal>
+      <permission>all</permission>
+    </allow>
+    <allow>
+      <principal>public</principal>
+      <permission>read</permission>
+    </allow>
+  </access>
+  <dataset id="d210000000">
+    <title>EXAMPLE dataset derived from mtcars</title>
+    <creator>
+      <individualName>
+        <givenName>Gregory E</givenName>
+        <surName>Maurer</surName>
+      </individualName>
+      <organizationName>New Mexico State University</organizationName>
+      <address>
+        <deliveryPoint/>
+        <city>Las Cruces</city>
+        <administrativeArea>NM</administrativeArea>
+        <postalCode>88003-8003</postalCode>
+        <country>U.S.A.</country>
+      </address>
+      <electronicMailAddress>gmaurer@nmsu.edu</electronicMailAddress>
+      <userId directory="ORCID">0000-0002-3007-8058</userId>
+    </creator>
+    <metadataProvider>
+      <organizationName>Jornada Basin LTER</organizationName>
+      <address>
+        <deliveryPoint>New Mexico State University</deliveryPoint>
+        <city>Las Cruces</city>
+        <administrativeArea>NM</administrativeArea>
+        <postalCode>88003-8003</postalCode>
+        <country>USA</country>
+      </address>
+      <onlineUrl>https://lter.jornada.nmsu.edu</onlineUrl>
+    </metadataProvider>
+    <pubDate>2021</pubDate>
+    <language>English</language>
+    <abstract>
+      <para>
+    This is an example dataset for the Jornada IM system. Data here come
+    from R’s `mtcars` example dataset.
+  </para>
+    </abstract>
+    <keywordSet>
+      <keyword keywordType="theme">grasslands</keyword>
+      <keywordThesaurus>LTER Controlled Vocabulary v1</keywordThesaurus>
+    </keywordSet>
+    <intellectualRights>
+      <para>
+  This information is released under the Creative Commons license - Attribution - CC BY 
+  (https://creativecommons.org/licenses/by/4.0/). The consumer of these data ("Data User" 
+  herein) is required to cite it appropriately in any publication that results from its 
+  use. The Data User should realize that these data may be actively used by others for 
+  ongoing research and that coordination may be necessary to prevent duplicate 
+  publication. The Data User is urged to contact the authors of these data if any 
+  questions about methodology or results occur. Where appropriate, the Data User is 
+  encouraged to consider collaboration or co-authorship with the authors. The Data User 
+  should realize that misinterpretation of data may occur if used out of context of the 
+  original study. While substantial efforts are made to ensure the accuracy of data and 
+  associated documentation, complete accuracy of data sets cannot be guaranteed. All data 
+  are made available "as is." The Data User should be aware, however, that data are updated 
+  periodically and it is the responsibility of the Data User to check for new versions of 
+  the data. The data authors and the repository where these data were obtained shall not be 
+  liable for damages resulting from any use or misinterpretation of the data. Thank you.
+</para>
+    </intellectualRights>
+    <distribution>
+      <online>
+        <url function="information">https://jrn.lternet.edu</url>
+      </online>
+    </distribution>
+    <coverage>
+      <geographicCoverage>
+        <geographicDescription>Basin Floor: Study occurred in the basin floor geomorphic zone in the Jornada Basin. More precise geographic coordinates for this study may be requested from the JRN LTER Data Manager (datamanager.jrn.lter@gmail.com).</geographicDescription>
+        <boundingCoordinates>
+          <westBoundingCoordinate>-106.872883</westBoundingCoordinate>
+          <eastBoundingCoordinate>-106.692716</eastBoundingCoordinate>
+          <northBoundingCoordinate>32.749487</northBoundingCoordinate>
+          <southBoundingCoordinate>32.473173</southBoundingCoordinate>
+        </boundingCoordinates>
+      </geographicCoverage>
+    </coverage>
+    <maintenance>
+      <description>No maintenance description provided.</description>
+      <maintenanceUpdateFrequency>notPlanned</maintenanceUpdateFrequency>
+    </maintenance>
+    <contact>
+      <organizationName>Jornada Basin LTER</organizationName>
+      <positionName>Jornada Basin LTER Information Manager</positionName>
+      <address>
+        <deliveryPoint>P.O. Box 30003, MSC 3JER New Mexico State University</deliveryPoint>
+        <city>Las Cruces</city>
+        <administrativeArea>NM</administrativeArea>
+        <postalCode>88003-8003</postalCode>
+        <country>USA</country>
+      </address>
+      <phone>575-646-1739</phone>
+      <electronicMailAddress>datamanager.jrn.lter@gmail.com</electronicMailAddress>
+      <onlineUrl>https://lter.jornada.nmsu.edu/information-management/</onlineUrl>
+    </contact>
+    <publisher>
+      <organizationName>Jornada Basin LTER</organizationName>
+      <address>
+        <deliveryPoint>New Mexico State University</deliveryPoint>
+        <city>Las Cruces</city>
+        <administrativeArea>NM</administrativeArea>
+        <postalCode>88003-8003</postalCode>
+        <country>USA</country>
+      </address>
+      <onlineUrl>https://lter.jornada.nmsu.edu</onlineUrl>
+    </publisher>
+    <methods>
+      <methodStep>
+        <description>
+          <section>
+            <title>Data collection</title>
+            <para>
+      Its from R’s mtcars datasets
+    </para>
+          </section>
+          <section>
+            <title>QA/QC</title>
+            <para>
+      none, its just an example
+    </para>
+          </section>
+          <section>
+            <title>Statistics</title>
+            <para>
+      Super significant in all areas
+    </para>
+          </section>
+        </description>
+      </methodStep>
+    </methods>
+    <project>
+      <title>Jornada Basin LTER</title>
+      <personnel>
+        <individualName>
+          <salutation>Dr.</salutation>
+          <givenName>Debra</givenName>
+          <surName>Peters</surName>
+        </individualName>
+        <address>
+          <deliveryPoint>P.O. Box 30003, MSC 3JER</deliveryPoint>
+          <deliveryPoint>New Mexico State University</deliveryPoint>
+          <city>Las Cruces</city>
+          <administrativeArea>NM</administrativeArea>
+          <postalCode>88003-8003</postalCode>
+          <country>United States</country>
+        </address>
+        <phone phonetype="voice">575-646-1739</phone>
+        <electronicMailAddress>dpeters.jrn.lter@gmail.com</electronicMailAddress>
+        <role>Principal Investigator</role>
+      </personnel>
+      <abstract>
+        <section>
+          <para>The Jornada Basin Long-Term Ecological Research (LTER) program is part of a 
+          national network of long-term ecological research sites funded by the US National 
+          Science Foundation (NSF). The Jornada LTER program has been continuously funded
+          since 1982 to develop general principles governing changes between grassland 
+          and shrubland ecosystems based on long-term data collected in the Chihuahuan 
+          Desert. We translate our findings to dryland ecosystems around the world, and 
+          forecast the dynamics of future ecosystem states in response to changing climate 
+          and land use.</para>
+        </section>
+      </abstract>
+      <funding>
+        <section>
+          <para>JRN is funded by the National Science Foundation under award DEB 2025166.</para>
+        </section>
+      </funding>
+    </project>
+    <dataTable>
+      <entityName>Example dataset derived from R's mtcars dataset</entityName>
+      <entityDescription>Tabular data on cars, only an example</entityDescription>
+      <physical>
+        <objectName>JRN000000_mtcars.csv</objectName>
+        <size unit="byte">884</size>
+        <authentication method="MD5">e56bbfca47f9cba5fb35e41904d1bccb</authentication>
+        <dataFormat>
+          <textFormat>
+            <numHeaderLines>1</numHeaderLines>
+            <numFooterLines>0</numFooterLines>
+            <recordDelimiter>\n</recordDelimiter>
+            <attributeOrientation>column</attributeOrientation>
+            <simpleDelimited>
+              <fieldDelimiter>,</fieldDelimiter>
+              <quoteCharacter>"</quoteCharacter>
+            </simpleDelimited>
+          </textFormat>
+        </dataFormat>
+        <distribution>
+          <online>
+            <url function="download">https://storage.googleapis.com/jrn-data-entities/JRN000000_mtcars.csv</url>
+          </online>
+        </distribution>
+      </physical>
+      <attributeList>
+        <attribute id="d210000000-e1-att1">
+          <attributeName>type</attributeName>
+          <attributeLabel>Car type</attributeLabel>
+          <attributeDefinition>Car type (make/model)</attributeDefinition>
+          <storageType>string</storageType>
+          <measurementScale>
+            <nominal>
+              <nonNumericDomain>
+                <textDomain>
+                  <definition>any text</definition>
+                </textDomain>
+              </nonNumericDomain>
+            </nominal>
+          </measurementScale>
+        </attribute>
+        <attribute id="d210000000-e1-att2">
+          <attributeName>mpg</attributeName>
+          <attributeLabel>Miles per gallon</attributeLabel>
+          <attributeDefinition>Efficiency in miles per gallon</attributeDefinition>
+          <storageType>float</storageType>
+          <measurementScale>
+            <ratio>
+              <unit>
+                <customUnit>milesPerGallon</customUnit>
+              </unit>
+              <numericDomain>
+                <numberType>real</numberType>
+              </numericDomain>
+            </ratio>
+          </measurementScale>
+        </attribute>
+        <attribute id="d210000000-e1-att3">
+          <attributeName>wt</attributeName>
+          <attributeLabel>Weight</attributeLabel>
+          <attributeDefinition>Curb weight</attributeDefinition>
+          <storageType>float</storageType>
+          <measurementScale>
+            <ratio>
+              <unit>
+                <standardUnit>kilogram</standardUnit>
+              </unit>
+              <numericDomain>
+                <numberType>real</numberType>
+              </numericDomain>
+            </ratio>
+          </measurementScale>
+        </attribute>
+        <attribute id="d210000000-e1-att4">
+          <attributeName>cyl</attributeName>
+          <attributeLabel>Cylinders</attributeLabel>
+          <attributeDefinition>Engine cylinders</attributeDefinition>
+          <storageType>integer</storageType>
+          <measurementScale>
+            <interval>
+              <unit>
+                <standardUnit>number</standardUnit>
+              </unit>
+              <numericDomain>
+                <numberType>integer</numberType>
+              </numericDomain>
+            </interval>
+          </measurementScale>
+        </attribute>
+        <attribute id="d210000000-e1-att5">
+          <attributeName>gear</attributeName>
+          <attributeLabel>Gears</attributeLabel>
+          <attributeDefinition>Number of gears</attributeDefinition>
+          <storageType>integer</storageType>
+          <measurementScale>
+            <interval>
+              <unit>
+                <standardUnit>number</standardUnit>
+              </unit>
+              <numericDomain>
+                <numberType>integer</numberType>
+              </numericDomain>
+            </interval>
+          </measurementScale>
+        </attribute>
+      </attributeList>
+      <numberOfRecords>32</numberOfRecords>
+    </dataTable>
+  </dataset>
+  <additionalMetadata>
+    <metadata>
+      <unitList>
+        <unit id="kilogram" abbreviation="kg" multiplierToSI="1" name="kilogram" unitType="mass">
+          <description>SI unit of mass</description>
+        </unit>
+        <unit id="milesPerGallon" abbreviation="MPG" constantToSI="0" multiplierToSI="1" name="milesPerGallon" parentSI="distance" unitType="NULL">
+          <description>Miles driver per gallon gasoline</description>
+        </unit>
+        <unit id="number" name="number" unitType="dimensionless">
+          <description>a quantity or amount</description>
+        </unit>
+      </unitList>
+    </metadata>
+  </additionalMetadata>
+</eml:eml>

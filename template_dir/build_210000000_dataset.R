@@ -29,14 +29,18 @@ dsource <- "./source_data/"
 # Output data file name
 f_out <- "JRN000000_mtcars.csv"
 
+# read in and write out mtcars (our example data) if it doesn't exist
+# df <- mtcars
+# write.csv(df, 'source_data/mtcars.csv')
+
 # Load data. Here we're using mtcars as an example, in reality something like:
 # df_in <- read_csv(paste0(dsource, "npp_values_20200915.csv"), 
 #		  skip = 12, na = c('nan', '.', '-9999'))
 
-
 # Load mtcars, create a new column with the rownames, remove some columns,
 # and export a simplified dataframe as csv (without rownames)
-df_in <- mtcars 
+df_in <- read.csv('source_data/mtcars.csv', row.names=1)
+
 df_in$type <- row.names(df_in)
 
 df.export <- df_in %>%
