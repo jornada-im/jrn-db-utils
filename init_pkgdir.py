@@ -41,8 +41,8 @@ print("\n....Created {0}".format(newdir))
 # Lay out the contents of the package directory
 if not os.path.exists(os.path.join(newdir, 'eml')):
     os.makedirs(os.path.join(newdir, 'eml'))
-if not os.path.exists(os.path.join(newdir, 'source_data_files')):
-    os.makedirs(os.path.join(newdir, 'source_data_files'))
+if not os.path.exists(os.path.join(newdir, 'source_data')):
+    os.makedirs(os.path.join(newdir, 'source_data'))
 if not os.path.exists(os.path.join(newdir, 'metadata_docs')):
     os.makedirs(os.path.join(newdir, 'metadata_docs'))
 
