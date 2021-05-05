@@ -71,15 +71,12 @@ metadata$dataset$revision_number <-revnum
 # Create packageID
 pkgid <- paste0(scope, "." , pkg, ".", revnum)
 
-# ------------------------
-# data set specific steps
-
-# create a list of entities
+# Create a list of entities formatted for the EML document
 tables_pkg <- create_entity_all(meta_list =  metadata,
                                 file_dir = getwd(),
                                 dataset_id = pkg)
 
-# List of data entity filenames going to EDI
+# Vector of data entity filenames going to EDI
 entitylist <- c()
 if (length(tables_pkg$data_tables) > 0){
   for (i in 1:length(tables_pkg$data_tables)){
@@ -92,7 +89,8 @@ if (length(tables_pkg$other_entities) > 0){
     entitylist <- append(entitylist, tables_pkg$other_entities[[i]]$physical$objectName)
   }
 }
-# create EML list object
+
+# Create an EML schema list object
 EML_pkg <-
   create_EML(
     meta_list = metadata,
