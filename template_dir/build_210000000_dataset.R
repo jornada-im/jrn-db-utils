@@ -10,7 +10,7 @@
 # When running this script on the shared drive it may be necessary to set the 
 # path based on how you map the drive. i.e.:
 #
-# setwd('/Volumes/JornadaFiles/LTER_IM/JRN_EMLassemblyline/pkg210.../')
+# setwd('/Volumes/JornadaFiles/LTER_IM/NonCore_packages/210.../')
 # setwd('Z:\\DataProducts\LTER_IM....
 #
 # In rstudio this sets the working directory to the dir the script is in:

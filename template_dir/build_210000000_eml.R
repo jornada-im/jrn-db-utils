@@ -24,8 +24,7 @@ scope <- 'knb-lter-jrn'
 pkg <- 210000000
 # EDI environment destination (production or staging)
 edienv <- 'staging'
-# List of data entity filenames going to EDI
-entitylist <- c('JRN000000_mtcars.csv')
+
 
 # set working directory
 setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
@@ -80,6 +79,19 @@ tables_pkg <- create_entity_all(meta_list =  metadata,
                                 file_dir = getwd(),
                                 dataset_id = pkg)
 
+# List of data entity filenames going to EDI
+entitylist <- c()
+if (length(tables_pkg$data_tables) > 0){
+  for (i in 1:length(tables_pkg$data_tables)){
+    entitylist <- append(entitylist, tables_pkg$data_tables[[i]]$physical$objectName)
+    }
+}
+# Also add otherentities
+if (length(tables_pkg$other_entities) > 0){
+  for (i in 1:length(tables_pkg$other_entities)){
+    entitylist <- append(entitylist, tables_pkg$other_entities[[i]]$physical$objectName)
+  }
+}
 # create EML list object
 EML_pkg <-
   create_EML(
@@ -116,8 +128,8 @@ for (e in 1:length(entitylist)){
 # (https://cloud.google.com/storage/docs/gsutil_install)
 
 # Once the entities are in their web location, push the package update to 
-# PASTA. NOTE that this wasn't working last I checked.... might have to upload
-# EML (but not data) at portal.edirepository.org
+# PASTA. NOTE that if this isn't working one might have to upload EML
+# (but not data) at portal.edirepository.org
 do.call(api_update_data_package,
         c(list(path = getwd(),       # current directory
                package.id = pkgid,   # package id
