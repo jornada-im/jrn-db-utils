@@ -54,8 +54,11 @@ copyfile('./template_dir/README.md', readme_fname)
 build_fname1 = os.path.join(newdir, 'build_{0}_eml.R'.format(pkgID))
 copyfile('./template_dir/build_210000000_eml.R', build_fname1)
 
-build_fname2 = os.path.join(newdir, 'build_{0}_dataset.R'.format(pkgID))
-copyfile('./template_dir/build_210000000_dataset.R', build_fname2)
+build_fname2 = os.path.join(newdir, 'build_{0}_eml_jerald.R'.format(pkgID))
+copyfile('./template_dir/build_210000000_eml_jerald.R', build_fname2)
+
+build_fname3 = os.path.join(newdir, 'build_{0}_dataset.R'.format(pkgID))
+copyfile('./template_dir/build_210000000_dataset.R', build_fname3)
 
 abs_fname = os.path.join(newdir, 'abstract.{0}.md'.format(pkgID))
 copyfile('./template_dir/abstract.210000000.md', abs_fname)
@@ -90,6 +93,13 @@ with open(build_fname2, 'r') as file:
 with open(build_fname2, 'w') as file:
     file.write(filedata)
 
+with open(build_fname3, 'r') as file:
+    filedata = file.read()
+    filedata = filedata.replace('210000000', pkgID)
+    file.close()
+
+with open(build_fname3, 'w') as file:
+    file.write(filedata)
 
 # Get info about the eml and data in the package
 import requests

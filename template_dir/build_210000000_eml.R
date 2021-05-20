@@ -3,42 +3,46 @@
 # BOILERPLATE >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 # This is a template build script using R to prepare eml and 
 # send a dataset to EDI. MetaEgress pulls metadata for the dataset
-# from an lter-metabase. You need credentials for this to work.
-# You can safely remove this and other boilerplate and use
-# the rest to design a new R script for your dataset.
-# <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-
+# from an lter-metabase. You need credentials for this to work, and 
+# there is a template credentials file in jrn-metabase-utils repository.
+#
 # All metadata documents (abstract, methods) and any data entity
 # files (CSVs, images, zipfiles etc.) must be in the directory with 
 # this script. The data entities, abstract, and methods files
 # should be named to match the values in the lter-metabase 
 # (DataSetEntities.FileName, DataSet.Abstract and 
 # DataSetMethod.Description).
+#
+# You can safely remove this and other boilerplate and use
+# the rest to design a new R script for your dataset.
+# <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
 library('MetaEgress')
 library('EDIutils')
+library('aws.s3')
 
-# EDI scope
-scope <- 'knb-lter-jrn'
 # Package ID
-pkg <- 210000000
+pkgid <- 210000000
 # EDI environment destination (production or staging)
 edienv <- 'staging'
-
+# s3 bucket name
+bucketname <- 'jrn-pubfiles'
 
 # set working directory
 setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
 
-# get credentials for JRN metabase and EDI
-# there is a template for this file in jrn-metabase-utils repository
-source('~/Desktop/jrn_cred.R')
+# Get credentials for JRN metabase, EDI, & s3 (change base path as needed)
+# See template for jrn_metabase_cred in jrn-metabase-utils repository
+source('~/Desktop/jrn_metabase_cred.R') 
+source('/media/greg/jrn-DataProducts/LTER_IM/im-keys/edi_keys.R')
+source('/media/greg/jrn-DataProducts/LTER_IM/im-keys/s3_keys.R')
 
 # connect to metabase and get metadata from specified datasets
 # can specify multiple dataset IDs if you plan to reuse this list
 metadata <-
 	do.call(get_meta,
 		c(list(dbname = "jrn_metabase_dev", # change to your DB name
-		       dataset_ids = c(pkg)), # can be a vector of datasets
+		       dataset_ids = c(pkgid)), # can be a vector of datasets
 		  mbcred)) # assigned in cred file
 
 # To just enter credentials at the command prompt (or possibly a popup if Rstudio is
@@ -54,76 +58,74 @@ metadata <-
 #    password = NULL # if NULL, RStudio will create pop-up windows asking for username and password
 #  )
 
-# Get current revision number in metabase
-revnum_start <- metadata$dataset$revision_number
-
-# If going to staging get the current revision number on staging
-# and increment by one, update in metadata list
-if (edienv=='staging'){
-  revnum_start <- api_list_data_package_revisions(scope, pkg, filter='newest',
-                                                  environment = edienv)
-}
-
-# Now update the metadata list with the next revision number
-revnum <- as.numeric(revnum_start) + 1
-metadata$dataset$revision_number <-revnum
-
-# Create packageID
-pkgid <- paste0(scope, "." , pkg, ".", revnum)
-
 # Create a list of entities formatted for the EML document
 tables_pkg <- create_entity_all(meta_list =  metadata,
                                 file_dir = getwd(),
-                                dataset_id = pkg)
-
-# Vector of data entity filenames going to EDI
-entitylist <- c()
-if (length(tables_pkg$data_tables) > 0){
-  for (i in 1:length(tables_pkg$data_tables)){
-    entitylist <- append(entitylist, tables_pkg$data_tables[[i]]$physical$objectName)
-    }
-}
-# Also add otherentities
-if (length(tables_pkg$other_entities) > 0){
-  for (i in 1:length(tables_pkg$other_entities)){
-    entitylist <- append(entitylist, tables_pkg$other_entities[[i]]$physical$objectName)
-  }
-}
+                                dataset_id = pkgid)
 
 # Create an EML schema list object
 EML_pkg <-
   create_EML(
     meta_list = metadata,
     entity_list = tables_pkg,
-    dataset_id = pkg
+    dataset_id = pkgid
   )
+
+# Get the scope and revision number from the EML list object
+emlpkgid <- EML_pkg$packageId
+scope <- unlist(strsplit(emlpkgid, ".", fixed=TRUE))[1]
+rev.db <- unlist(strsplit(emlpkgid, ".", fixed=TRUE))[3]
+
+# Get the current revision number on EDI and increment by one,
+rev.edi <- api_list_data_package_revisions(scope, pkgid,
+                                           filter='newest',
+                                           environment=edienv)
+if (is.na(as.numeric(rev.edi))){
+  print(paste("WARNING: new data package in environment",
+              edienv, ", revision will equal 1."))
+  rev.edi <- 0
+}
+rev.next <- as.numeric(rev.edi) + 1
+
+# Create new packageID with rev.next and insert into EML list
+emlpkgid.new <- paste0(scope, "." , pkgid, ".", rev.next)
+EML_pkg$packageId <- emlpkgid.new
 
 # validate and serialize (write) EML document
 EML::eml_validate(EML_pkg)
 EML::write_eml(EML_pkg, file = paste0(pkgid, ".xml"))
 
-# NOW UPDATE MANUALLY on EDI *OR* follow steps below if your S3 is configured
+#*******************************************************************
+# NOW UPDATE MANUALLY at portal.edirepository.org using the new EML
+#                         *OR* 
+# follow steps below if you have s3 credentials and aws.s3 installed
+#*******************************************************************
 
-# Pushing the package update to EDI environment
-
-# This only works if the data entity files have a public URL in the EML
-# <distribution> element. In metabase, the URL for that element most go into
-# the "DataSetEntities".Urlhead value for each entity. PASTA has to find the 
-# entities at that URL to download and check them.
-
-# To put the entities in an S3 bucket, use system calls to s3cmd put:
-s3dest <- 's3://jrn-data-entities'
-
-for (e in 1:length(entitylist)){
-  syscall <- paste('s3cmd put', entitylist[e], s3dest)
-  system(syscall)
+# Get a vector of data entity filenames going to EDI with the package
+entlist <- c()
+if (length(EML_pkg$dataset$dataTable) > 0){
+  for (i in 1:length(EML_pkg$dataset$dataTable)){
+    entlist <- append(entlist,
+                      EML_pkg$dataset$dataTable[[i]]$physical$objectName)
+    }
+}
+# Also add otherentities
+if (length(EML_pkg$dataset$otherEntity) > 0){
+  for (i in 1:length(EML_pkg$dataset$otherEntity)){
+    entlist <- append(entlist,
+                      EML_pkg$dataset$otherEntity[[i]]$physical$objectName)
+  }
 }
 
-# Documentation for s3cmd is [here](https://s3tools.org/usage)
-# There are other options, including some options in R (aws.s3 and 
-# googleCloudStorageR packages), but I haven't gotten them to work yet. 
-# Another option is gsutil, which should work in windows
-# (https://cloud.google.com/storage/docs/gsutil_install)
+# Pushing the data entities to the s3 bucket
+for (fname in entlist) {
+  print(paste("Pushing", fname, "to", bucketname,
+              "s3 bucket..."))
+  aws.s3::put_object(fname, fname, bucketname,
+                     acl='public-read', verbose=TRUE,
+                     show_progress=TRUE)
+}
+
 
 # Once the entities are in their web location, push the package update to 
 # PASTA. NOTE that if this isn't working one might have to upload EML
