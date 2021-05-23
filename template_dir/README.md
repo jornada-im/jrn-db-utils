@@ -36,12 +36,12 @@ documents, non-tabular data files, etc.)
 
 ## Build scripts
 
-The build scripts here prepare the data and metadata for publication using various R packages. The dataset may be published using the scripts, or manually using the [EDI portal](https://portal-s.edirepository.org).
+The build scripts here prepare the data and metadata for publication using various R packages. The resulting EML and data entities may be published using the scripts, or manually using the [EDI portal](https://portal-s.edirepository.org).
 
-* build_210000000_dataset.R - Basic build script that formats & QA/QCs data in `source_data/` and writes publishable data files to the working directory (`./`)
-* build_210000000_eml.R - Creates an eml file and optionally uploads data
+* `build_210000000_dataset.R` - Basic build script that formats & QA/QCs data in `source_data/` and writes publishable data files to the working directory (`./`)
+* `build_210000000_eml.R` - Creates an EML file and optionally uploads data
 entities and pushes the package to EDI using APIs.
-* build_210000000_eml_jerald.R - same as above, but uses the [jerald](https://github.com/jornada-im/jerald) R package.
+* `build_210000000_eml_jerald.R` - same as above, but uses the [`jerald`](https://github.com/jornada-im/jerald) R package.
 
 ## How to make EML and publish the dataset
 
